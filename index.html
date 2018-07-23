@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>随机密码生成器</title>
+    <meta name="viewport" content="width=device-width">
+</head>
+
+<body>
+    <h1>随机密码生成器</h1>
+    <p>随机生成的密码必须包含以下种类字符：</p>
+    <p>
+        <input type="checkbox" id="0" checked>
+        <label for="0">小写字母</label>
+        <input type="checkbox" id="1" checked>
+        <label for="1">大写字母</label>
+        <input type="checkbox" id="2" checked>
+        <label for="2">数字</label>
+        <input type="checkbox" id="3" checked>
+        <label for="3">特殊字符</label>
+    </p>
+    <p>
+        密码长度：
+        <input id="length" type="number" value="8">
+    </p>
+    <p>
+        <button id="gen">生成</button>
+    </p>
+    <p>
+        <input id="pwd" type="text" value="">
+    </p>
+    <p>源代码可以右键查看，我不会保存你的密码，放心使用</p>
+    <script>
+        var lowerCase = 'abcdefghijklmnopqrstuvwxyz';
+        var upperCase = lowerCase.toUpperCase();
+        var number = '1234567890';
+        var sign = '!@#$%^&*()-_';
+        var source = [lowerCase.split(''), upperCase.split(''), number.split(''), sign.split('')];
+        var random = function (length) {
+            return Math.floor(Math.random() * length);
+        };
+
+        document.getElementById('gen').addEventListener('click', function () {
+            var pwd = '';
+            var pwdLength = 8;
+            var length = +document.getElementById('length').value;
+            if (length > 0) {
+                pwdLength = length;
+            }
+
+            var checkboxs = document.querySelectorAll('[type=checkbox]');
+            for (var i = 0; i < checkboxs.length; i++) {
+                if (checkboxs[i].checked) {
+                    pwd += source[i][random(source[i].length)];
+                }
+            }
+
+            if (pwd.length === 0) {
+                alert('请至少选择一种字符类型');
+                return;
+            }
+            for (; pwd.length < pwdLength;) {
+                var s = random(source.length);
+                if (checkboxs[s].checked) {
+                    var choose = source[s][random(source[s].length)];
+                    if (pwdLength > 40 || pwd.indexOf(choose) === -1) {
+                        pwd += choose;
+                    }
+                }
+            }
+
+            var chars = pwd.split('');
+            chars.sort(function () {
+                return Math.random() - 0.5;
+            }).sort(function () {
+                return Math.random() - 0.5;
+            });
+            document.getElementById('pwd').value = chars.join('');
+            document.getElementById('pwd').select();
+
+            try {
+                var successful = document.execCommand('copy');
+                var msg = successful ? 'successful' : 'unsuccessful';
+                console.log('Copying text command was ' + msg);
+            } catch (err) {
+                console.log('Oops, unable to copy');
+            }
+        });
+    </script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-13042054-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-13042054-3');
+</script>
+
+</body>
+
+</html>
